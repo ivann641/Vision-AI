@@ -6,7 +6,7 @@ grafo = {
     'B': [('A', 2), ('C', 2)],
     'C': [('B', 2), ('D', 2)],
     'D': [('C', 2), ('A', 7)],
-    'P': []
+    'Z': []
 }
 
 def buscar_ruta_optima(grafo, inicio, destino):
