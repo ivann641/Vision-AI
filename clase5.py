@@ -1,46 +1,70 @@
 import heapq
 
-# 1. Definir el grafo usando un diccionario de adyacencia
-# Cada nodo tiene una lista de tuplas (vecino, costo_arista)
+# Grafo del mapa de rutas
 grafo = {
-    'A': [('B', 2), ('D', 5)],
+    'A': [('B', 2), ('D', 7)],
     'B': [('A', 2), ('C', 2)],
     'C': [('B', 2), ('D', 2)],
-    'D': [('C', 2), ('A', 5)]
+    'D': [('C', 2), ('A', 7)],
+    'P': []
 }
 
-def dijkstra(grafo, inicio, destino):
-    # Diccionario para guardar la menor distancia conocida a cada nodo
+def buscar_ruta_optima(grafo, inicio, destino):
+
+    if inicio not in grafo:
+        raise ValueError(f"El nodo de inicio '{inicio}' no existe en el grafo")
+
+    elif destino not in grafo:
+        raise ValueError(f"El nodo destino '{destino}' no existe en el grafo")
+
     distancias = {nodo: float('inf') for nodo in grafo}
     distancias[inicio] = 0
     
-    # Cola de prioridad (heap). Almacena tuplas: (distancia_acumulada, nodo)
-    # heapq ordena las tuplas SIEMPRE por el primer elemento (la distancia)
+    # DICCIONARIO CLAVE: Guarda de dónde vinimos (nodo_hijo: nodo_padre)
+    padres = {nodo: None for nodo in grafo}
+    
     cola_prioridad = [(0, inicio)]
     
     while cola_prioridad:
-        # Extrae el nodo con la distancia más corta actual
         distancia_actual, nodo_actual = heapq.heappop(cola_prioridad)
         
-        # Si ya llegamos al destino, terminamos
         if nodo_actual == destino:
-            return distancia_actual
+            break  # Ya encontramos la ruta óptima al destino
             
-        # Si encontramos una distancia mayor a la ya procesada, la ignoramos
         if distancia_actual > distancias[nodo_actual]:
             continue
             
-        # Revisar los vecinos del nodo actual
         for vecino, peso_arista in grafo[nodo_actual]:
             distancia_nueva = distancia_actual + peso_arista
             
-            # Si encontramos un camino más corto hacia el vecino, lo actualizamos
             if distancia_nueva < distancias[vecino]:
                 distancias[vecino] = distancia_nueva
+                padres[vecino] = nodo_actual # Registramos el camino
                 heapq.heappush(cola_prioridad, (distancia_nueva, vecino))
-                
-    return distancias[destino]
 
-# Ejecutar el algoritmo
-distancia_final = dijkstra(grafo, 'A', 'D')
-print(f"La distancia más corta de A a D es: {distancia_final} metros.")
+    if distancias[destino] == float('inf'):
+        return [], distancias[destino]
+                
+    # RECONSTRUCCIÓN DEL CAMINO (Desde el destino hacia atrás hasta el inicio)
+    ruta = []
+    nodo_actual = destino
+    while nodo_actual is not None:
+        ruta.append(nodo_actual)
+        nodo_actual = padres[nodo_actual]
+    
+    ruta.reverse() # Invertimos para que vaya de Inicio a Destino
+    return ruta, distancias[destino]
+
+inicio = 'A'
+destino = 'P'
+
+
+# Ejecutar la búsqueda de ruta
+ruta_exacta, distancia_total = buscar_ruta_optima(grafo, inicio, destino)
+
+
+if distancia_total == float('inf'):
+    print("No hay camino posible hasta ese destino.")
+else:
+    print(f"La mejor ruta es: {' -> '.join(ruta_exacta)}")
+    print(f"Distancia total recorrida: {distancia_total} metros.")
