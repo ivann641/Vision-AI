@@ -1,5 +1,6 @@
 import heapq
 
+
 # Grafo del mapa de rutas
 grafo = {
     'A': [('B', 2), ('D', 7)],
@@ -55,16 +56,15 @@ def buscar_ruta_optima(grafo, inicio, destino):
     ruta.reverse() # Invertimos para que vaya de Inicio a Destino
     return ruta, distancias[destino]
 
-inicio = 'A'
-destino = 'P'
 
+if __name__ == "__main__":
+    inicio = 'A'
+    destino = 'Z'
+    ruta_exacta, distancia_total = buscar_ruta_optima(grafo, inicio, destino)
 
-# Ejecutar la búsqueda de ruta
-ruta_exacta, distancia_total = buscar_ruta_optima(grafo, inicio, destino)
+    if distancia_total == float('inf'):
+        print("No hay camino posible hasta ese destino.")
 
-
-if distancia_total == float('inf'):
-    print("No hay camino posible hasta ese destino.")
-else:
-    print(f"La mejor ruta es: {' -> '.join(ruta_exacta)}")
-    print(f"Distancia total recorrida: {distancia_total} metros.")
+    else:
+        print(f"La mejor ruta es: {' -> '.join(ruta_exacta)}")
+        print(f"Distancia total recorrida: {distancia_total} metros.")
