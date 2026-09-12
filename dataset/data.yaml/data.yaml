@@ -1,0 +1,4 @@
+names:
+  0: marcador
+path: .
+train: train.txt
