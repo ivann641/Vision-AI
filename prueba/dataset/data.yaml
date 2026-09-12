@@ -1,0 +1,6 @@
+path: C:/Users/lolop/OneDrive/Escritorio/VisionAI/prueba/dataset
+train: images/train
+val: images/val
+
+names:
+  0: marcador
