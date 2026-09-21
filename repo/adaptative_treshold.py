@@ -9,7 +9,11 @@ while True:
 
     gris = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+
     resultado = cv2.adaptiveThreshold(gris, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 5)
+
+    resultado = cv2.morphologyEx(resultado, cv2.MORPH_CLOSE, kernel)
 
     contornos, jerarquia = cv2.findContours(resultado, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -21,10 +25,13 @@ while True:
         if len(aproximacion) == 4:
             area = cv2.contourArea(contorno)
             if area > 200:
-                if cv2.isContourConvex(aproximacion):
+                hull = cv2.convexHull(contorno)
+                area_hull = cv2.contourArea(hull)
+                solidez = area / float(area_hull)
+                if solidez > 0.9:
                     x, y, ancho, alto = cv2.boundingRect(aproximacion)
                     aspecto = ancho / float(alto)
-                    if 0.7 < aspecto < 1.3:
+                    if 0.4 < aspecto < 2.7:
                         cv2.drawContours(frame, [aproximacion], -1, (0, 255, 0), 3)
 
     cv2.imshow("Original", frame)
