@@ -1,6 +1,14 @@
 import cv2
 
+def nada(x):
+    pass
+
 captura = cv2.VideoCapture(0)
+
+cv2.namedWindow("Controles")
+cv2.createTrackbar("blockSize", "Controles", 51, 200, nada)
+cv2.createTrackbar("C", "Controles", 50, 100, nada)      # offset: valor real = slider - 50
+cv2.createTrackbar("kernel", "Controles", 15, 50, nada)
 
 while True:
     ret, frame = captura.read()
@@ -9,10 +17,22 @@ while True:
 
     gris = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    # Leer valores actuales de los sliders
+    blockSize = cv2.getTrackbarPos("blockSize", "Controles")
+    if blockSize % 2 == 0:
+        blockSize += 1
+    if blockSize < 3:
+        blockSize = 3
 
-    resultado = cv2.adaptiveThreshold(gris, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 15, 5)
+    C = cv2.getTrackbarPos("C", "Controles") - 50  # offset para permitir negativos
 
+    kernel_size = cv2.getTrackbarPos("kernel", "Controles")
+    if kernel_size < 1:
+        kernel_size = 1
+
+    resultado = cv2.adaptiveThreshold(gris, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, blockSize, C)
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
     resultado = cv2.morphologyEx(resultado, cv2.MORPH_CLOSE, kernel)
 
     contornos, jerarquia = cv2.findContours(resultado, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
