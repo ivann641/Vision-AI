@@ -1,6 +1,6 @@
 import heapq
 
-
+#djkistra
 # Grafo del mapa de rutas
 grafo = {
     'A': [('B', 2), ('D', 7)],
@@ -59,7 +59,7 @@ def buscar_ruta_optima(grafo, inicio, destino):
 
 if __name__ == "__main__":
     inicio = 'A'
-    destino = 'Z'
+    destino = 'D'
     ruta_exacta, distancia_total = buscar_ruta_optima(grafo, inicio, destino)
 
     if distancia_total == float('inf'):
