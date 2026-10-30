@@ -4,8 +4,8 @@ import numpy as np
 import cv2
  
 # ---------- 1. Medidas del cartel (en metros, medidas con cinta) ----------
-ANCHO = 1.20   # M19. Cambialo por el cartel que uses en la prueba
-ALTO = 0.90
+ANCHO = 0.80   # M19. Cambialo por el cartel que uses en la prueba
+ALTO = 0.95
  
 def puntos_del_cartel(ancho, alto):
     """
